@@ -9,8 +9,6 @@ import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.RectF
 import android.util.AttributeSet
-import android.util.Log
-import android.view.MotionEvent
 import android.view.View
 import android.view.animation.DecelerateInterpolator
 import androidx.annotation.ColorInt
@@ -21,7 +19,7 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
     private val innerArc = Paint()
 
 
-    private var canterpoint=0
+    private var canterpoint = 0
     private val progressRectf = RectF()
     private val DEFAULT_FOREGROUND_PROGRESSBAR_WIDTH = 30f
     private val DEFAULT_BACKGROUND_PROGRESSBAR_WIDTH = 30f
@@ -39,14 +37,17 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
 
     @ColorInt
     private var DEFAULT_FOREGROUND_PROGRESS_COLOR = Color.parseColor("#71CC75")
-   @ColorInt
+
+    @ColorInt
     private var DEFAULT_BACKGROUND_PROGRESS_COLOR = Color.parseColor("#F9F9FA")
 
     private var foregroundProgressbarWidth = DEFAULT_FOREGROUND_PROGRESSBAR_WIDTH
 
     private var backgroundProgressbarWidth = DEFAULT_BACKGROUND_PROGRESSBAR_WIDTH
+
     @ColorInt
     private var foregroundProgressColor = DEFAULT_FOREGROUND_PROGRESS_COLOR
+
     @ColorInt
     private var backgroundProgressColor = DEFAULT_BACKGROUND_PROGRESS_COLOR
 
@@ -87,12 +88,12 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
     ) {
         var typedArray =
             context.obtainStyledAttributes(attributes, R.styleable.ArcProgress, defStyle, 0)
-       initTypeArray(typedArray)
+        initTypeArray(typedArray)
         init()
         progressValidation(progress)
     }
 
-    fun initTypeArray(typedArray: TypedArray){
+    fun initTypeArray(typedArray: TypedArray) {
 
         foregroundProgressbarWidth = typedArray.getFloat(
             R.styleable.ArcProgress_ap_foreground_progressbar_width,
@@ -103,20 +104,33 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
             DEFAULT_BACKGROUND_PROGRESSBAR_WIDTH
         );
         foregroundProgressColor =
-            typedArray.getColor(R.styleable.ArcProgress_ap_progress_color, DEFAULT_FOREGROUND_PROGRESS_COLOR)
+            typedArray.getColor(
+                R.styleable.ArcProgress_ap_progress_color,
+                DEFAULT_FOREGROUND_PROGRESS_COLOR
+            )
         backgroundProgressColor = typedArray.getColor(
             R.styleable.ArcProgress_ap_progress_background_color,
             DEFAULT_BACKGROUND_PROGRESS_COLOR
         )
         progress = typedArray.getFloat(R.styleable.ArcProgress_ap_progress, DEFAULT_PROGRESS)
-        isRoundCorner = typedArray.getBoolean(R.styleable.ArcProgress_ap_progress_roundedCorner, DEFAULT_isRoundCorner)
+        isRoundCorner = typedArray.getBoolean(
+            R.styleable.ArcProgress_ap_progress_roundedCorner,
+            DEFAULT_isRoundCorner
+        )
 
-        isClockwise=typedArray.getBoolean(R.styleable.ArcProgress_ap_progress_isClockwise,DEFAULT_CLOCKWISE)
+        isClockwise = typedArray.getBoolean(
+            R.styleable.ArcProgress_ap_progress_isClockwise,
+            DEFAULT_CLOCKWISE
+        )
 
 
-        progressMaxscale=typedArray.getFloat(R.styleable.ArcProgress_ap_progress_maxscale,DEFAULT_MAXSCALE)
+        progressMaxscale =
+            typedArray.getFloat(R.styleable.ArcProgress_ap_progress_maxscale, DEFAULT_MAXSCALE)
 
-        progressbarTouchEnable=typedArray.getBoolean(R.styleable.ArcProgress_ap_progress_touchEnabled,DEFAULT_TOUCH_ENABLED)
+        progressbarTouchEnable = typedArray.getBoolean(
+            R.styleable.ArcProgress_ap_progress_touchEnabled,
+            DEFAULT_TOUCH_ENABLED
+        )
 
         typedArray.recycle()
     }
@@ -189,17 +203,6 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
 //    }
 
 
-
-
-
-
-
-
-
-
-
-
-
     fun init() {
         outerArc.strokeWidth = foregroundProgressbarWidth
         outerArc.style = Paint.Style.STROKE
@@ -222,28 +225,28 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-        if(MeasureSpec.getMode(widthMeasureSpec)>0 && MeasureSpec.getMode(heightMeasureSpec)>0){
-        width = MeasureSpec.getSize(widthMeasureSpec).toFloat()
+        if (MeasureSpec.getMode(widthMeasureSpec) > 0 && MeasureSpec.getMode(heightMeasureSpec) > 0) {
+            width = MeasureSpec.getSize(widthMeasureSpec).toFloat()
 //        Log.e("Width ",MeasureSpec.getMode(widthMeasureSpec).toString()+"height "+)
-        height = MeasureSpec.getSize(heightMeasureSpec).toFloat()
-        }else{
-            width=400f;
-            height=400f;
+            height = MeasureSpec.getSize(heightMeasureSpec).toFloat()
+        } else {
+            width = 400f;
+            height = 400f;
         }
 
-        val maxStockWidth=Math.max(outerArc.strokeWidth,innerArc.strokeWidth)
-        progressRectf.left = 0f + maxStockWidth/2f
+        val maxStockWidth = Math.max(outerArc.strokeWidth, innerArc.strokeWidth)
+        progressRectf.left = 0f + maxStockWidth / 2f
         progressRectf.right = width.toFloat() - maxStockWidth / 2f
         progressRectf.top = 0f + maxStockWidth / 2f
         progressRectf.bottom = height.toFloat()
 
 
 
-        setMeasuredDimension(width.toInt(), height.toInt()/2+(3*maxStockWidth/4).toInt())
+        setMeasuredDimension(width.toInt(), height.toInt() / 2 + (3 * maxStockWidth / 4).toInt())
     }
 
     @SuppressLint("ResourceAsColor")
-    override fun onDraw(canvas: Canvas?) {
+    override fun onDraw(canvas: Canvas) {
         super.onDraw(canvas)
         progressValidation(progress)
         canvas!!.drawArc(progressRectf, startAngle, swipeAngle, false, innerArc)
@@ -259,26 +262,28 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
 
     fun setBackgroundProgressColor(color: Int) {
         backgroundProgressColor = color
-        innerArc.color =backgroundProgressColor
+        innerArc.color = backgroundProgressColor
         invalidate()
     }
 
-    fun setForeGroundProgressThickness(thickness: Float){
+    fun setForeGroundProgressThickness(thickness: Float) {
         outerArc.strokeWidth = thickness
         invalidate()
     }
-    fun setBackGroundProgressWidth(thickness: Float){
-        innerArc.strokeWidth = thickness
-        invalidate()
-    }
-    fun setProgressThickness(thickness: Float){
+
+    fun setBackGroundProgressWidth(thickness: Float) {
         innerArc.strokeWidth = thickness
         invalidate()
     }
 
-   fun getprogress():Float{
-       return progress
-   }
+    fun setProgressThickness(thickness: Float) {
+        innerArc.strokeWidth = thickness
+        invalidate()
+    }
+
+    fun getprogress(): Float {
+        return progress
+    }
 
 
     fun setProgress(progress: Float) {
@@ -286,60 +291,59 @@ class ArcProgress(context: Context, attributes: AttributeSet) : View(context, at
 
     }
 
-    fun getProgress():Float{
-        val percentage=(progress/180)*100
-        val progressValue=(percentage/100)*progressMaxscale
+    fun getProgress(): Float {
+        val percentage = (progress / 180) * 100
+        val progressValue = (percentage / 100) * progressMaxscale
         return progressValue
     }
-    
-    fun setIsRound(isRoundCorner: Boolean){
-        this.isRoundCorner=isRoundCorner
+
+    fun setIsRound(isRoundCorner: Boolean) {
+        this.isRoundCorner = isRoundCorner
         setRoundedCorner(isRoundCorner)
     }
 
-    fun setRoundedCorner(isRoundCorner:Boolean){
-        this.isRoundCorner=isRoundCorner
-        if (isRoundCorner){
-        outerArc.strokeCap=Paint.Cap.ROUND
-        innerArc.strokeCap=Paint.Cap.ROUND
-        }
-        else{
-            outerArc.strokeCap=Paint.Cap.SQUARE
-            innerArc.strokeCap=Paint.Cap.SQUARE
+    fun setRoundedCorner(isRoundCorner: Boolean) {
+        this.isRoundCorner = isRoundCorner
+        if (isRoundCorner) {
+            outerArc.strokeCap = Paint.Cap.ROUND
+            innerArc.strokeCap = Paint.Cap.ROUND
+        } else {
+            outerArc.strokeCap = Paint.Cap.SQUARE
+            innerArc.strokeCap = Paint.Cap.SQUARE
         }
     }
 
-    fun progressValidation(progress: Float){
+    fun progressValidation(progress: Float) {
 //        Log.e("Progress",this.progress.toString()+"  "+progress)
-        if(this.progress>=swipeAngle){
-            this.progress=swipeAngle
+        if (this.progress >= swipeAngle) {
+            this.progress = swipeAngle
 
-        }else{
-            this.progress=progress
+        } else {
+            this.progress = progress
         }
         invalidate()
     }
 
-    fun setProgressbarMaxscale(maxScale:Float){
-        progressMaxscale=maxScale
+    fun setProgressbarMaxscale(maxScale: Float) {
+        progressMaxscale = maxScale
     }
-    fun getProgressbarMaxscale():Float{
+
+    fun getProgressbarMaxscale(): Float {
         return progressMaxscale
     }
 
-    fun setTouchEnable(touchEnable:Boolean){
-        progressbarTouchEnable=touchEnable
+    fun setTouchEnable(touchEnable: Boolean) {
+        progressbarTouchEnable = touchEnable
     }
 
-    fun getTouchEnable():Boolean{
+    fun getTouchEnable(): Boolean {
         return progressbarTouchEnable
     }
 
 
-
     /*Adding the animation to progressbar*/
     fun setProgressWithAnimation(progress: Float) {
-        val objectAnimator = ObjectAnimator.ofFloat(this, "progress",this.progress, progress)
+        val objectAnimator = ObjectAnimator.ofFloat(this, "progress", this.progress, progress)
         objectAnimator.duration = DEFAULT_ANIMATION_DURATION.roundToLong()
         objectAnimator.interpolator = DecelerateInterpolator()
         objectAnimator.start()
